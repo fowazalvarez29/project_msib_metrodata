@@ -1,3 +1,6 @@
+IF OBJECT_ID('sp_login') IS NOT NULL
+DROP PROC sp_login;
+GO
 CREATE PROCEDURE sp_login
     @username VARCHAR(25),
     @password VARCHAR(255)
