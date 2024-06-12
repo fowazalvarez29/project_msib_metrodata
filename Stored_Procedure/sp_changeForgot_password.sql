@@ -1,3 +1,6 @@
+IF OBJECT_ID('sp_changeForgot_password') IS NOT NULL
+DROP PROC sp_changeForgot_password;
+GO
 CREATE PROCEDURE sp_changeForgot_password
     @Email VARCHAR(25),
     @NewPassword VARCHAR(255),
@@ -67,6 +70,7 @@ BEGIN
     SELECT 'Password has been changed successfully!' AS message;
 END;
 
+-- URUTAN DECLARENYA (Email, NewPassword, ComfirmPasword, OTP)
 -- Contoh akun email yang tidak terdaftar
 EXEC sp_changeForgot_password 'nonexistent@example.com', 'newPassword123', 'newPassword123', 123456;
 
