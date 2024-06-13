@@ -2,7 +2,7 @@ IF OBJECT_ID('sp_changeForgot_password') IS NOT NULL
 DROP PROC sp_changeForgot_password;
 GO
 CREATE PROCEDURE sp_changeForgot_password
-    @Email VARCHAR(25),
+    @Email VARCHAR(255),
     @NewPassword VARCHAR(255),
     @ConfirmPassword VARCHAR(255),
     @OTP INT
@@ -13,6 +13,7 @@ BEGIN
     DECLARE @otp_expiry DATETIME;
     DECLARE @otp_used BIT;
     DECLARE @current_datetime DATETIME = GETDATE();
+    DECLARE @password_strength INT;
 
     -- Mengecek apakah email ada di database
     IF NOT EXISTS (SELECT 1 
@@ -37,7 +38,15 @@ BEGIN
     -- Mengecek apakah password dan confirm password cocok
     IF @NewPassword != @ConfirmPassword
     BEGIN
-        SELECT 'Password not match!' AS message;
+        SELECT 'Password didn''t Match!' AS message;
+        RETURN;
+    END
+
+    -- Mengecek kekuatan password
+    SET @password_strength = dbo.func_password_policy(@NewPassword);
+    IF @password_strength = 2
+    BEGIN
+        SELECT 'Password must contain at least 8 characters, including an uppercase letter, a number, and a special character.' AS message;
         RETURN;
     END
 
@@ -69,22 +78,17 @@ BEGIN
 
     SELECT 'Password has been changed successfully!' AS message;
 END;
-
--- URUTAN DECLARENYA (Email, NewPassword, ComfirmPasword, OTP)
--- Contoh akun email yang tidak terdaftar
-EXEC sp_changeForgot_password 'nonexistent@example.com', 'newPassword123', 'newPassword123', 123456;
-
--- Contoh password yang tidak cocok
-EXEC sp_changeForgot_password 'john@example.com', 'newPassword123', 'differentPassword123', 123456;
-
--- Contoh OTP yang tidak valid
-EXEC sp_changeForgot_password 'john@example.com', 'newPassword123', 'newPassword123', 654321;
-
--- Contoh OTP yang telah digunakan (Cek tabel account)
-EXEC sp_changeForgot_password 'john@example.com', 'newPassword123', 'newPassword123', 123456;
-
--- Contoh OTP yang diberikan telah expired (Cek tabel account dan pastikan sudah expired)
-EXEC sp_changeForgot_password 'john@example.com', 'newPassword123', 'newPassword123', 281184;
+GO
 
 -- Contoh Password dan OTP yang sesuai (!!!JALANKAN DULU sp_generate_otp dan copykan OTP nya!!!)
-EXEC sp_changeForgot_password 'john@example.com', 'newPassword123', 'newPassword123', 577869;
+EXEC sp_generate_otp 'john@example.com';
+BEGIN TRAN
+EXEC sp_changeForgot_password
+    @Email = 'john@example.com',
+    @NewPassword = 'NewPassword123!',
+    @ConfirmPassword = 'NewPassword123!',
+    @OTP = 779215;
+ROLLBACK
+
+-- Cara Exec lainnya URUTAN DECLARENYA (Email, NewPassword, ComfirmPasword, OTP)
+EXEC sp_changeForgot_password 'john@example.com','NewPassword123!','NewPassword123!','312475';
