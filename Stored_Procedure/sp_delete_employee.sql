@@ -11,7 +11,7 @@ BEGIN
     -- Mengecek apakah Employee ID ditemukan
     IF NOT EXISTS (SELECT 1 FROM tbl_employees WHERE id = @EmployeeId)
     BEGIN
-        SELECT 'Employee ID is not found!' AS message;
+        SELECT 'Employee not Registered!' AS message;
         RETURN;
     END
 
