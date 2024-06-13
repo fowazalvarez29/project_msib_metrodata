@@ -13,7 +13,7 @@ BEGIN
     DECLARE @otp_expiry DATETIME;
     DECLARE @otp_used BIT;
     DECLARE @current_datetime DATETIME = GETDATE();
-    DECLARE @password_strength INT;
+    DECLARE @password_policy INT;
 
     -- Mengecek apakah email ada di database
     IF NOT EXISTS (SELECT 1 
@@ -43,8 +43,8 @@ BEGIN
     END
 
     -- Mengecek kekuatan password
-    SET @password_strength = dbo.func_password_policy(@NewPassword);
-    IF @password_strength = 2
+    SET @password_policy = dbo.func_password_policy(@NewPassword);
+    IF @password_policy = 2
     BEGIN
         SELECT 'Password must contain at least 8 characters, including an uppercase letter, a number, and a special character.' AS message;
         RETURN;
