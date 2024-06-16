@@ -35,6 +35,14 @@ BEGIN
         DELETE FROM tbl_job_histories
         WHERE employee_id = @EmployeeId;
 
+		-- Menghapus data kehadiran dari tabel attendance yang terkait dengan Employee ID
+        DELETE FROM tbl_attendance
+        WHERE employee_id = @EmployeeId;
+
+        -- Menghapus data lembur dari tabel overtime yang terkait dengan Employee ID
+        DELETE FROM tbl_overtime
+        WHERE employee_id = @EmployeeId;
+
         -- Menghapus data karyawan dari tbl_employees
         DELETE FROM tbl_employees
         WHERE id = @EmployeeId;
