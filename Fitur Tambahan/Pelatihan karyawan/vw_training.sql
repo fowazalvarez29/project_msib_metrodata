@@ -4,9 +4,10 @@ GO
 CREATE VIEW vw_training_page AS
 SELECT
 tr.id,
-tr.training_name AS 'Training',
+tr.training_name AS 'Training Name',
 tr.start_date AS 'Start Training',
 tr.end_date AS 'End of Training',
+tr.criteria AS 'Criteria in Month',
 dp.department_name AS 'Department Name'
 FROM tbl_trainings tr
 LEFT JOIN
@@ -14,5 +15,3 @@ tbl_departments dp ON tr.department_id = dp.id;
 
 -- PEMANGGILAN VIEW
 SELECT * FROM [dbo].[vw_training_page];
-
-
