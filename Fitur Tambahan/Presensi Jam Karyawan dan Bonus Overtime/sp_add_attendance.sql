@@ -10,6 +10,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+	-- Mengecek apakah Employee ID ditemukan
+    IF NOT EXISTS (SELECT 1 FROM tbl_employees WHERE id = @EmployeeId)
+    BEGIN
+        SELECT 'Employee not Registered!' AS message;
+        RETURN;
+    END
+
     DECLARE @CheckInStatus VARCHAR(10);
     DECLARE @CheckOutStatus VARCHAR(10);
     DECLARE @CheckOutDateTime DATETIME;
@@ -53,12 +60,14 @@ END;
 GO
 
 -- Contoh memasukkan data (HARUS MEMASUKKAN TANGGAL YANG BERBEDA UNTUK SETIAP EMPLOYEE ID)
-EXEC sp_record_attendance @EmployeeId = 1, @CheckIn = '2024-06-13 08:45', @CheckOut = '17:15';
-EXEC sp_record_attendance @EmployeeId = 1, @CheckIn = '2024-06-14 09:05', @CheckOut = '19:30';
-EXEC sp_record_attendance @EmployeeId = 2, @CheckIn = '2024-06-14 08:55', @CheckOut = '16:45';
-EXEC sp_record_attendance @EmployeeId = 2, @CheckIn = '2024-06-15 09:00', @CheckOut = '17:00';
-EXEC sp_record_attendance @EmployeeId = 2, @CheckIn = '2024-06-16 09:00', @CheckOut = '20:00';
-EXEC sp_record_attendance @EmployeeId = 2, @CheckIn = '2024-06-17 09:00', @CheckOut = '20:00';
+EXEC sp_add_attendance @EmployeeId = 1, @CheckIn = '2024-06-13 08:45', @CheckOut = '17:15';
+EXEC sp_add_attendance @EmployeeId = 1, @CheckIn = '2024-06-14 09:05', @CheckOut = '19:30';
+EXEC sp_add_attendance @EmployeeId = 2, @CheckIn = '2024-06-14 08:55', @CheckOut = '16:45';
+EXEC sp_add_attendance @EmployeeId = 2, @CheckIn = '2024-06-15 09:00', @CheckOut = '17:00';
+EXEC sp_add_attendance @EmployeeId = 2, @CheckIn = '2024-06-16 09:00', @CheckOut = '20:00';
+BEGIN TRAN
+EXEC sp_add_attendance @EmployeeId = 100, @CheckIn = '2024-06-17 09:00', @CheckOut = '20:00';
+ROLLBACK
 
 TRUNCATE TABLE [dbo].[tbl_attendance]
 TRUNCATE TABLE [dbo].[tbl_overtime]
