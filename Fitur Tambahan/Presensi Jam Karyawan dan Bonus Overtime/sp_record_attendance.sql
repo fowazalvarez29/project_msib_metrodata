@@ -1,8 +1,8 @@
-IF OBJECT_ID('sp_record_attendance') IS NOT NULL
-    DROP PROCEDURE sp_record_attendance;
+IF OBJECT_ID('sp_add_attendance') IS NOT NULL
+    DROP PROCEDURE sp_add_attendance;
 GO
 
-CREATE PROCEDURE sp_record_attendance
+CREATE PROCEDURE sp_add_attendance
     @EmployeeId INT,
     @CheckIn DATETIME,
     @CheckOut TIME
