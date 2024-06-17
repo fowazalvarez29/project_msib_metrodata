@@ -12,6 +12,33 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+	-- Mengecek apakah Employee ID ditemukan
+    IF NOT EXISTS (SELECT 1 FROM tbl_employees WHERE id = @EmployeeId)
+    BEGIN
+        SELECT 'Employee not Registered!' AS message;
+        RETURN;
+    END
+
+    -- Mengecek apakah CheckIn ditemukan untuk EmployeeId
+    IF NOT EXISTS (SELECT 1 FROM tbl_attendance WHERE employee_id = @EmployeeId AND check_in = @CheckIn)
+    BEGIN
+        SELECT 'Attendance record not found!' AS message;
+        RETURN;
+    END
+
+    -- Memvalidasi status check-in dan check-out
+    IF @NewCheckInStatus IS NOT NULL AND dbo.fn_check_in_status(@NewCheckInStatus) = 0
+    BEGIN
+        SELECT 'Invalid CheckIn Status!' AS message;
+        RETURN;
+    END
+
+    IF @NewCheckOutStatus IS NOT NULL AND dbo.fn_check_out_status(@NewCheckOutStatus) = 0
+    BEGIN
+        SELECT 'Invalid CheckOut Status!' AS message;
+        RETURN;
+    END
+
     BEGIN TRANSACTION;
 
     BEGIN TRY

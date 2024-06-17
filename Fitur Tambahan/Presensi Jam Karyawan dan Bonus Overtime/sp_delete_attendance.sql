@@ -9,6 +9,20 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+	-- Mengecek apakah Employee ID ditemukan
+    IF NOT EXISTS (SELECT 1 FROM tbl_employees WHERE id = @EmployeeId)
+    BEGIN
+        SELECT 'Employee not Registered!' AS message;
+        RETURN;
+    END
+
+    -- Mengecek apakah CheckIn ditemukan untuk EmployeeId
+    IF NOT EXISTS (SELECT 1 FROM tbl_attendance WHERE employee_id = @EmployeeId AND check_in = @CheckIn)
+    BEGIN
+        SELECT 'Attendance record not found!' AS message;
+        RETURN;
+    END
+
     BEGIN TRANSACTION;
 
     BEGIN TRY
