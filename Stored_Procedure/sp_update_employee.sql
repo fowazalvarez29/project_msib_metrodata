@@ -114,4 +114,6 @@ EXEC sp_update_employee
     @ManagerId = 2,
     @JobId = 'J001',
     @DepartmentId = 1;
+
+SELECT * FROM [dbo].[tbl_employees]
 ROLLBACK

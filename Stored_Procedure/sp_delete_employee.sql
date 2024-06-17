@@ -35,12 +35,16 @@ BEGIN
         DELETE FROM tbl_job_histories
         WHERE employee_id = @EmployeeId;
 
-		-- Menghapus data kehadiran dari tabel attendance yang terkait dengan Employee ID
+        -- Menghapus data kehadiran dari tabel attendance yang terkait dengan Employee ID
         DELETE FROM tbl_attendance
         WHERE employee_id = @EmployeeId;
 
         -- Menghapus data lembur dari tabel overtime yang terkait dengan Employee ID
         DELETE FROM tbl_overtime
+        WHERE employee_id = @EmployeeId;
+
+        -- Menghapus data pelatihan karyawan dari tabel employee_trainings yang terkait dengan Employee ID
+        DELETE FROM tbl_employee_trainings
         WHERE employee_id = @EmployeeId;
 
         -- Menghapus data karyawan dari tbl_employees
@@ -52,14 +56,16 @@ BEGIN
         SELECT 'Employee data deleted successfully!' AS message;
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
         SELECT ERROR_MESSAGE() AS message;
     END CATCH
 END;
 GO
 
--- Contoh
+-- Contoh Penghapusan Data
 BEGIN TRAN
-EXEC sp_delete_employee
-    @EmployeeId = 1;
+EXEC sp_delete_employee @EmployeeId = 1;
+
+SELECT * FROM [dbo].[tbl_employees]
 ROLLBACK

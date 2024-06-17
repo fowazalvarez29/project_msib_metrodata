@@ -135,6 +135,7 @@ BEGIN
 END;
 
 -- Perintah untuk Register Employee Baru
+BEGIN TRAN
 EXEC sp_register_employee
     @FirstName = 'Fowaz',
     @LastName = 'Amran',
@@ -146,6 +147,9 @@ EXEC sp_register_employee
     @ManagerId = 1,
     @JobId = 'J001',
     @DepartmentId = 1,
-    @Username = 'amranalvarez',
+    @Username = 'amranalvarez2',
     @Password = 'password123',
     @ConfirmPassword = 'password123';
+
+SELECT * FROM [dbo].[tbl_employees]
+ROLLBACK
